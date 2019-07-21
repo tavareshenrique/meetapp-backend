@@ -4,19 +4,19 @@ import User from '../models/User';
 
 class UserController {
   async store(req, res) {
-    // const schema = Yup.object().shape({
-    //   name: Yup.string().required(),
-    //   email: Yup.string()
-    //     .email()
-    //     .required(),
-    //   password: Yup.string()
-    //     .required()
-    //     .min(6),
-    // });
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string()
+        .email()
+        .required(),
+      password: Yup.string()
+        .required()
+        .min(6),
+    });
 
-    // schema.validate(req.body, { abortEarly: false }).catch(e => {
-    //   return res.status(400).json(e.errors);
-    // });
+    schema.validate(req.body, { abortEarly: false }).catch(e => {
+      return res.status(400).json(e.errors);
+    });
 
     const userExists = await User.findOne({ where: { email: req.body.email } });
 
