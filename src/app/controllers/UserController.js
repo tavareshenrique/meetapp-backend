@@ -31,8 +31,6 @@ class UserController {
       name,
       email,
     });
-
-    return res.json(userExists);
   }
 
   async update(req, res) {
