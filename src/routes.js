@@ -7,6 +7,7 @@ import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 
 import authMiddleware from './app/middlewares/auth';
+import MeetappController from './app/controllers/MeetappController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -17,6 +18,8 @@ routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
+
+routes.post('/meetapp', MeetappController.store);
 
 routes.post('/files', upload.single('file'), FileController.store);
 
