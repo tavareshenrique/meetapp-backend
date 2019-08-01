@@ -4,12 +4,19 @@ import Meetapp from '../models/Meetapp';
 
 class MeetappController {
   async store(req, res) {
+    const { title, description, location, date } = req.body;
+
     if (isBefore(parseISO(req.body.date), new Date())) {
       return res.status(400).json({ error: 'Date has passed' });
     }
-    const { id, title, description, location, date } = await Meetapp.create(
-      req.body
-    );
+
+    const { id } = await Meetapp.create({
+      user_id: req.userId,
+      title,
+      description,
+      location,
+      date,
+    });
 
     return res.json({
       id,
@@ -18,6 +25,31 @@ class MeetappController {
       location,
       date,
     });
+  }
+
+  async update(req, res) {
+    const meetapp = await Meetapp.findOne({ where: { id: req.params.id } });
+
+    if (isBefore(parseISO(meetapp.date), new Date())) {
+      return res.status(400).json({
+        error: 'Unable to change the date of an event that already happened',
+      });
+    }
+    // console.log(req.req.params.id);
+    console.log(req.userId);
+    console.log(meetapp.user_id);
+
+    if (req.userId !== meetapp.user_id) {
+      return res.status(400).json({
+        error: 'You do not have permission to change this event',
+      });
+    }
+
+    const { title, description, location, date } = await meetapp.update(
+      req.body
+    );
+
+    return res.json({ title, description, location, date });
   }
 }
 

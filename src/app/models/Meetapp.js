@@ -8,6 +8,7 @@ class Meetapp extends Model {
         description: Sequelize.STRING,
         location: Sequelize.STRING,
         date: Sequelize.DATE,
+        user_id: Sequelize.INTEGER,
       },
       {
         sequelize,
