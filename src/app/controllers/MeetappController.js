@@ -49,9 +49,6 @@ class MeetappController {
         error: 'Unable to change the date of an event that already happened',
       });
     }
-    // console.log(req.req.params.id);
-    console.log(req.userId);
-    console.log(meetapp.user_id);
 
     if (req.userId !== meetapp.user_id) {
       return res.status(400).json({
@@ -64,6 +61,26 @@ class MeetappController {
     );
 
     return res.json({ title, description, location, date });
+  }
+
+  async destroy(req, res) {
+    const meetapp = await Meetapp.findOne({ where: { id: req.params.id } });
+
+    if (isBefore(parseISO(meetapp.date), new Date())) {
+      return res.status(400).json({
+        error: 'You cannot cancel an event that has already happened.',
+      });
+    }
+
+    if (req.userId !== meetapp.user_id) {
+      return res.status(400).json({
+        error: 'You do not have permission to change this event',
+      });
+    }
+
+    await meetapp.destroy();
+
+    return res.send();
   }
 }
 
