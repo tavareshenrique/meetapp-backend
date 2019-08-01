@@ -19,6 +19,7 @@ routes.use(authMiddleware);
 
 routes.put('/users', UserController.update);
 
+routes.get('/meetapp', MeetappController.index);
 routes.post('/meetapp', MeetappController.store);
 routes.put('/meetapp/:id', MeetappController.update);
 

@@ -3,6 +3,20 @@ import { isBefore, parseISO } from 'date-fns';
 import Meetapp from '../models/Meetapp';
 
 class MeetappController {
+  async index(req, res) {
+    const { page = 1 } = req.query;
+
+    const meetapp = await Meetapp.findAll({
+      where: { user_id: req.userId },
+      order: ['date'],
+      attributes: ['id', 'title', 'description', 'location', 'date', 'banner'],
+      limit: 20,
+      offset: (page - 1) * 20,
+    });
+
+    return res.json({ meetapp });
+  }
+
   async store(req, res) {
     const { title, description, location, date } = req.body;
 
