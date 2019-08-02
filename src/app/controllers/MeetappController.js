@@ -1,4 +1,4 @@
-// import * as Yup from 'yup';
+import * as Yup from 'yup';
 import { isBefore, parseISO } from 'date-fns';
 import Meetapp from '../models/Meetapp';
 
@@ -18,13 +18,24 @@ class MeetappController {
   }
 
   async store(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      description: Yup.string().required(),
+      location: Yup.string().required(),
+      date: Yup.date().required(),
+    });
+
+    schema.validate(req.body, { abortEarly: false }).catch(e => {
+      return res.status(400).json(e.errors);
+    });
+
     const { title, description, location, date } = req.body;
 
-    if (isBefore(parseISO(req.body.date), new Date())) {
+    if (isBefore(parseISO(date), new Date())) {
       return res.status(400).json({ error: 'Date has passed' });
     }
 
-    const { id } = await Meetapp.create({
+    const meetapp = await Meetapp.create({
       user_id: req.userId,
       title,
       description,
@@ -32,16 +43,21 @@ class MeetappController {
       date,
     });
 
-    return res.json({
-      id,
-      title,
-      description,
-      location,
-      date,
-    });
+    return res.json(meetapp);
   }
 
   async update(req, res) {
+    const schema = Yup.object().shape({
+      title: Yup.string().required(),
+      description: Yup.string().required(),
+      location: Yup.string().required(),
+      date: Yup.date().required(),
+    });
+
+    schema.validate(req.body, { abortEarly: false }).catch(e => {
+      return res.status(400).json(e.errors);
+    });
+
     const meetapp = await Meetapp.findOne({ where: { id: req.params.id } });
 
     if (isBefore(parseISO(meetapp.date), new Date())) {
