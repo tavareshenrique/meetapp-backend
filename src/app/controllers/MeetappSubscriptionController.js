@@ -13,6 +13,12 @@ class MeetappSubscriptionController {
       });
     }
 
+    if (!isBefore(parseISO(meetapp.date), new Date())) {
+      return res.status(400).json({
+        error: 'This meetapp has already happened, Im sorry!',
+      });
+    }
+
     const { id, user_id, meetapp_id } = MeetappSubscription.create({
       user_id: req.userId,
       meetapp_id: req.params.id,
