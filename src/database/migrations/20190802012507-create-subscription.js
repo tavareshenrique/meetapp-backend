@@ -1,22 +1,22 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('meetapp_subscriptions', {
+    return queryInterface.createTable('subscriptions', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      user_id: {
+      meetup_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' },
+        references: { model: 'meetups', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         allowNull: false,
       },
-      meetapp_id: {
+      user_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'meetapps', key: 'id' },
+        references: { model: 'users', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         allowNull: false,
@@ -33,6 +33,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('meetapp_subscriptions');
+    return queryInterface.dropTable('subscriptions');
   },
 };
