@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import * as Yup from 'yup';
 
 import User from '../models/User';
-import auth from '../../config/auth';
+import authConfig from '../../config/auth';
 
 class SessionController {
   async store(req, res) {
@@ -10,14 +10,12 @@ class SessionController {
       email: Yup.string()
         .email()
         .required(),
-      password: Yup.string()
-        .required()
-        .min(6),
+      password: Yup.string().required(),
     });
 
-    schema.validate(req.body, { abortEarly: false }).catch(e => {
-      return res.status(400).json(e.errors);
-    });
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation fails' });
+    }
 
     const { email, password } = req.body;
 
@@ -39,8 +37,8 @@ class SessionController {
         name,
         email,
       },
-      token: jwt.sign({ id }, auth.secret, {
-        expiresIn: auth.expiresIn,
+      token: jwt.sign({ id }, authConfig.secret, {
+        expiresIn: authConfig.expiresIn,
       }),
     });
   }

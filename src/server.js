@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-
 import app from './app';
 
-app.listen(3333);
+app.server.listen(3333);
